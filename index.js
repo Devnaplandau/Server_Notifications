@@ -1,7 +1,7 @@
+const { Novu, PushProviderIdEnum } = require("@novu/node");
 const express = require("express");
 const app = express();
-let port = process.env.PORT || 3979;
-const { Novu, PushProviderIdEnum } = require("@novu/node");
+let port = process.env.PORT || 5979;
 
 var cors = require("cors");
 app.use(cors());
@@ -11,13 +11,8 @@ app.get("/", (req, res) => {
   res.send("This is Api");
 });
 
-// cấu hình sử selfhost novu
-const config = {
-  backendUrl: "http://localhost:3000",
-};
-const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df", config);
-
 app.post("/mixed", async (req, res) => {
+  const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df");
   try {
     const { email, tokenUser, content, phone, firstName, lastName } = req.body;
 
