@@ -47,6 +47,39 @@ app.post("/mixed", async (req, res) => {
   }
 });
 
+app.post("/flutter", async (req, res) => {
+  const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df");
+  try {
+    const { tokenUser } = req.body;
+    const subscriberId = "4JBaDK_nvnAS";
+    await novu.subscribers.identify(subscriberId, {
+      firstName: "push",
+      lastName: "app-android",
+    });
+
+    await novu.subscribers.setCredentials(
+      subscriberId,
+      PushProviderIdEnum.FCM,
+      {
+        deviceTokens: [`${tokenUser}`],
+      }
+    );
+    novu.trigger("push-app-android", {
+      to: {
+        subscriberId: "4JBaDK_nvnAS",
+      },
+      payload: {
+        title: "Khuyến mãi Gem !",
+        content: "Bạn sẽ nhận được 50% giá trị khi mua Gem vào hôm nay !",
+      },
+    });
+    res.status(200).json("complete !");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+});
+
 app.listen(port, () => {
   console.log(`This project is start in port ${port}`);
 });
