@@ -1,4 +1,5 @@
 const { Novu, PushProviderIdEnum } = require("@novu/node");
+
 const express = require("express");
 const app = express();
 let port = process.env.PORT || 5979;
@@ -11,42 +12,7 @@ app.get("/", (req, res) => {
   res.send("This is Api");
 });
 
-app.post("/mixed", async (req, res) => {
-  const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df");
-  try {
-    const { email, tokenUser, content, phone, firstName, lastName } = req.body;
-
-    const subscriberId = "4JBaDK_nvnAS";
-    await novu.subscribers.identify(subscriberId, {
-      firstName: firstName,
-      lastName: lastName,
-    });
-
-    await novu.subscribers.setCredentials(
-      subscriberId,
-      PushProviderIdEnum.FCM,
-      {
-        deviceTokens: [`${tokenUser}`],
-      }
-    );
-
-    novu.trigger("notifi-push-inapp", {
-      to: {
-        subscriberId: "4JBaDK_nvnAS",
-        email: email,
-        phone: phone,
-      },
-      payload: {
-        content: content,
-      },
-    });
-    res.status(200).json("complete !");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
-  }
-});
-
+//  noti on app android - ios - web -  use firebase hobbitsocial
 app.post("/flutter", async (req, res) => {
   const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df");
   try {
@@ -77,6 +43,80 @@ app.post("/flutter", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
+  }
+});
+//  done novu selfhost local in docker - use firebase hobbitsocial
+app.post("/flutter-selfhost", async (req, res) => {
+  const config = {
+    backendUrl: "http://localhost:3000",
+  };
+  const novu = new Novu("8c3f5611bc4ec9bbae672e6bc67a9281", config);
+  try {
+    const { tokenDevice } = req.body;
+    console.log(tokenDevice);
+    const subscriberId = "eh19HHmssaAu";
+    await novu.subscribers.identify(subscriberId, {
+      firstName: "an",
+      lastName: "app",
+    });
+
+    await novu.subscribers.setCredentials(
+      subscriberId,
+      PushProviderIdEnum.FCM,
+      {
+        deviceTokens: [`${tokenDevice}`],
+      }
+    );
+    novu.trigger("push-app-android", {
+      to: {
+        subscriberId: "eh19HHmssaAu",
+      },
+      payload: {
+        title: "This is title !",
+        content: "You can get some gift for day !",
+      },
+    });
+
+    res.status(200).json("complete !");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error.data);
+  }
+});
+
+app.post("/huntgem-notification", async (req, res) => {
+  const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df");
+  try {
+    const { template, email, tokenWebUser } = req.body;
+    console.log(tokenDevice);
+    const subscriberId = "4JBaDK_nvnAS";
+    await novu.subscribers.identify(subscriberId, {
+      firstName: "website",
+      lastName: "Huntgem",
+    });
+
+    await novu.subscribers.setCredentials(
+      subscriberId,
+      PushProviderIdEnum.FCM,
+      {
+        deviceTokens: [`${tokenWebUser}`],
+      }
+    );
+    novu.trigger("demo-huntgem", {
+      to: {
+        subscriberId: "4JBaDK_nvnAS",
+        email: email,
+      },
+      payload: {
+        template: template,
+        email: email,
+      },
+    });
+
+    res.status(200).json("complete !");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error.data);
   }
 });
 
