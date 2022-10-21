@@ -84,11 +84,11 @@ app.post("/flutter-selfhost", async (req, res) => {
   }
 });
 
+//  api huntgem
 app.post("/huntgem-notification", async (req, res) => {
   const novu = new Novu("cc31476446244ecf397a5f5c4d59f4df");
   try {
     const { template, email, tokenWebUser } = req.body;
-    console.log(tokenDevice);
     const subscriberId = "4JBaDK_nvnAS";
     await novu.subscribers.identify(subscriberId, {
       firstName: "website",
